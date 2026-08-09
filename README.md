@@ -110,4 +110,4 @@ CMakeLists.txt  Native build and test configuration
 
 ## Project history
 
-This was an individual Spring 2026 parallel-computing project by Nicholas Babineaux at The University of Texas at Austin. The benchmark data in the report was collected on Frontera. The standalone portfolio version preserves the project history while adding automated tests, CI, and clearer reproduction guidance.
+This was an individual Spring 2026 parallel-computing project by Nicholas Babineaux at The University of Texas at Austin. The benchmark data in the report was collected on Frontera. The standalone portfolio version preserves the original implementation and archival report while adding automated tests, CI, and clearer reproduction guidance.
