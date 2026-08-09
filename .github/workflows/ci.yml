@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MPI
+        run: sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Unit tests
+        run: ctest --test-dir build --output-on-failure
+      - name: MPI smoke tests
+        run: |
+          mpirun -np 2 ./build/nbody allpairs 8 2 0.001
+          mpirun -np 2 ./build/nbody barneshut 8 2 0.001 0.5
+      - name: Check plotting scripts
+        run: python -m py_compile plots/plot_results.py plots/plot_snapshots.py
