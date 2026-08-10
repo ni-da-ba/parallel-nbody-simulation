@@ -2,6 +2,7 @@
 #define PARTICLE_IO_HPP
 
 #include <vector>
+
 #include "particle.hpp"
 
 constexpr int PARTICLE_DOUBLES = 7;

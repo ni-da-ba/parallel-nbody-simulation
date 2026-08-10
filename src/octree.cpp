@@ -8,14 +8,12 @@
 
 Cube::Cube() : center(), half_size(0.0) {}
 
-Cube::Cube(const Vec3& center_, double half_size_)
-  : center(center_), half_size(half_size_) {}
+Cube::Cube(const Vec3& center_, double half_size_) : center(center_), half_size(half_size_) {}
 
 bool Cube::contains(const Vec3& point) const {
-    return
-        point.x >= center.x - half_size && point.x <= center.x + half_size &&
-      point.y >= center.y - half_size && point.y <= center.y + half_size &&
-      point.z >= center.z - half_size && point.z <= center.z + half_size;
+  return point.x >= center.x - half_size && point.x <= center.x + half_size &&
+         point.y >= center.y - half_size && point.y <= center.y + half_size &&
+         point.z >= center.z - half_size && point.z <= center.z + half_size;
 }
 
 Cube Cube::child_cube(int octant) const {
@@ -29,11 +27,11 @@ Cube Cube::child_cube(int octant) const {
 }
 
 OctreeNode::OctreeNode(const Cube& region_)
-  : region_(region_),
-    total_mass_(0.0),
-    center_of_mass_(0.0, 0.0, 0.0),
-    particle_index_(-1),
-    children_() {}
+    : region_(region_),
+      total_mass_(0.0),
+      center_of_mass_(0.0, 0.0, 0.0),
+      particle_index_(-1),
+      children_() {}
 
 bool OctreeNode::is_leaf() const {
   for (const auto& child : children_) {
@@ -44,21 +42,13 @@ bool OctreeNode::is_leaf() const {
   return true;
 }
 
-const Cube& OctreeNode::region() const {
-  return region_;
-}
+const Cube& OctreeNode::region() const { return region_; }
 
-double OctreeNode::total_mass() const {
-  return total_mass_;
-}
+double OctreeNode::total_mass() const { return total_mass_; }
 
-const Vec3& OctreeNode::center_of_mass() const {
-  return center_of_mass_;
-}
+const Vec3& OctreeNode::center_of_mass() const { return center_of_mass_; }
 
-int OctreeNode::particle_index() const {
-  return particle_index_;
-}
+int OctreeNode::particle_index() const { return particle_index_; }
 
 int OctreeNode::get_octant(const Vec3& point) const {
   int octant = 0;
@@ -98,10 +88,8 @@ void OctreeNode::insert(int new_particle_index, const std::vector<Particle>& par
     const int existing_particle_index = particle_index_;
 
     const Vec3& existing_pos = particles[existing_particle_index].position;
-    if (existing_pos.x == pos.x && existing_pos.y == pos.y &&
-        existing_pos.z == pos.z) {
-      throw std::runtime_error(
-          "Barnes-Hut tree cannot separate coincident particle positions.");
+    if (existing_pos.x == pos.x && existing_pos.y == pos.y && existing_pos.z == pos.z) {
+      throw std::runtime_error("Barnes-Hut tree cannot separate coincident particle positions.");
     }
 
     particle_index_ = -1;
@@ -145,13 +133,9 @@ void OctreeNode::compute_mass_properties(const std::vector<Particle>& particles)
   }
 }
 
-Vec3 OctreeNode::compute_acceleration_on_particle(
-						  int target_particle_index,
-						  const std::vector<Particle>& particles,
-						  double theta,
-						  double softening,
-    double G
-						  ) const {
+Vec3 OctreeNode::compute_acceleration_on_particle(int target_particle_index,
+                                                  const std::vector<Particle>& particles,
+                                                  double theta, double softening, double G) const {
   if (total_mass_ <= 0.0) {
     return Vec3(0.0, 0.0, 0.0);
   }
@@ -192,9 +176,8 @@ Vec3 OctreeNode::compute_acceleration_on_particle(
 
   for (const auto& child : children_) {
     if (child) {
-      total_acceleration += child->compute_acceleration_on_particle(
-								    target_particle_index, particles, theta, softening, G
-								    );
+      total_acceleration += child->compute_acceleration_on_particle(target_particle_index,
+                                                                    particles, theta, softening, G);
     }
   }
 
@@ -204,27 +187,17 @@ Vec3 OctreeNode::compute_acceleration_on_particle(
 void OctreeNode::print(const std::vector<Particle>& particles, int depth) const {
   const std::string indent(static_cast<std::size_t>(depth) * 2, ' ');
 
-  std::cout
-    << indent
-    << "Node(center=("
-    << region_.center.x << ", "
-    << region_.center.y << ", "
-    << region_.center.z << "), half_size="
-    << region_.half_size
-    << ", total_mass=" << total_mass_
-    << ", center_of_mass=("
-    << center_of_mass_.x << ", "
-    << center_of_mass_.y << ", "
-    << center_of_mass_.z << ")";
+  std::cout << indent << "Node(center=(" << region_.center.x << ", " << region_.center.y << ", "
+            << region_.center.z << "), half_size=" << region_.half_size
+            << ", total_mass=" << total_mass_ << ", center_of_mass=(" << center_of_mass_.x << ", "
+            << center_of_mass_.y << ", " << center_of_mass_.z << ")";
 
   if (is_leaf()) {
     std::cout << ", leaf_particle=" << particle_index_;
     if (particle_index_ >= 0) {
       const auto& p = particles[particle_index_];
-      std::cout << " @ pos=("
-		<< p.position.x << ", "
-		<< p.position.y << ", "
-		<< p.position.z << ")";
+      std::cout << " @ pos=(" << p.position.x << ", " << p.position.y << ", " << p.position.z
+                << ")";
     }
   }
 
@@ -233,7 +206,7 @@ void OctreeNode::print(const std::vector<Particle>& particles, int depth) const 
   if (!is_leaf()) {
     for (const auto& child : children_) {
       if (child) {
-	child->print(particles, depth + 1);
+        child->print(particles, depth + 1);
       }
     }
   }
@@ -241,8 +214,7 @@ void OctreeNode::print(const std::vector<Particle>& particles, int depth) const 
 
 Cube make_bounding_cube(const std::vector<Particle>& particles) {
   if (particles.empty()) {
-    throw std::invalid_argument(
-        "Cannot construct an octree bounding cube for zero particles.");
+    throw std::invalid_argument("Cannot construct an octree bounding cube for zero particles.");
   }
 
   double min_x = particles[0].position.x;
@@ -261,11 +233,7 @@ Cube make_bounding_cube(const std::vector<Particle>& particles) {
     max_z = std::max(max_z, p.position.z);
   }
 
-  const Vec3 center(
-		    0.5 * (min_x + max_x),
-		    0.5 * (min_y + max_y),
-		    0.5 * (min_z + max_z)
-		    );
+  const Vec3 center(0.5 * (min_x + max_x), 0.5 * (min_y + max_y), 0.5 * (min_z + max_z));
 
   const double span_x = max_x - min_x;
   const double span_y = max_y - min_y;

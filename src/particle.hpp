@@ -12,7 +12,7 @@ struct Particle {
   Particle() : position(), velocity(), acceleration(), mass(1.0) {}
 
   Particle(const Vec3& pos, const Vec3& vel, double m)
-    : position(pos), velocity(vel), acceleration(), mass(m) {}
+      : position(pos), velocity(vel), acceleration(), mass(m) {}
 };
 
 #endif

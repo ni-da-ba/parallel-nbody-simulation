@@ -4,13 +4,18 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Install MPI
-        run: sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev
+      - name: Install native tooling
+        run: sudo apt-get update && sudo apt-get install -y clang-format openmpi-bin libopenmpi-dev
+      - name: Check C++ formatting
+        run: clang-format --dry-run --Werror src/*.cpp src/*.hpp tests/*.cpp
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
       - name: Build

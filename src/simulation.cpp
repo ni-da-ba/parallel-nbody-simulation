@@ -4,9 +4,9 @@
 #include <iostream>
 
 namespace {
-  constexpr double G = 1.0;
-  constexpr double SOFTENING = 1e-9;
-}
+constexpr double G = 1.0;
+constexpr double SOFTENING = 1e-9;
+}  // namespace
 
 void compute_accelerations(std::vector<Particle>& particles) {
   for (auto& p : particles) {
@@ -18,7 +18,7 @@ void compute_accelerations(std::vector<Particle>& particles) {
   for (std::size_t i = 0; i < n; ++i) {
     for (std::size_t j = 0; j < n; ++j) {
       if (i == j) {
-	continue;
+        continue;
       }
 
       Vec3 displacement = particles[j].position - particles[i].position;
@@ -41,10 +41,8 @@ void step_particles(std::vector<Particle>& particles, double dt) {
   }
 }
 
-void compute_accelerations_from_global(
-				       std::vector<Particle>& local_particles,
-				       const std::vector<Particle>& global_particles
-				       ) {
+void compute_accelerations_from_global(std::vector<Particle>& local_particles,
+                                       const std::vector<Particle>& global_particles) {
   for (auto& p : local_particles) {
     p.acceleration = Vec3(0.0, 0.0, 0.0);
   }
@@ -55,7 +53,7 @@ void compute_accelerations_from_global(
       double dist_sq = displacement.norm_squared() + SOFTENING;
 
       if (dist_sq <= SOFTENING) {
-	continue;
+        continue;
       }
 
       double dist = std::sqrt(dist_sq);
@@ -67,11 +65,8 @@ void compute_accelerations_from_global(
   }
 }
 
-void step_particles_from_global(
-				std::vector<Particle>& local_particles,
-				const std::vector<Particle>& global_particles,
-    double dt
-				) {
+void step_particles_from_global(std::vector<Particle>& local_particles,
+                                const std::vector<Particle>& global_particles, double dt) {
   compute_accelerations_from_global(local_particles, global_particles);
 
   for (auto& p : local_particles) {
@@ -100,24 +95,18 @@ void print_system_statistics(const std::vector<Particle>& particles, int step) {
   double total_mass = compute_total_mass(particles);
   Vec3 total_momentum = compute_total_momentum(particles);
 
-  std::cout
-    << "Stats at step " << step
-    << ": total_mass=" << total_mass
-    << ", total_momentum=("
-    << total_momentum.x << ", "
-    << total_momentum.y << ", "
-    << total_momentum.z << ")\n";
+  std::cout << "Stats at step " << step << ": total_mass=" << total_mass << ", total_momentum=("
+            << total_momentum.x << ", " << total_momentum.y << ", " << total_momentum.z << ")\n";
 }
 
 void print_particles(const std::vector<Particle>& particles, int step) {
   std::cout << "Step " << step << '\n';
   for (std::size_t i = 0; i < particles.size(); ++i) {
     const auto& p = particles[i];
-    std::cout
-      << "Particle " << i
-      << " pos=(" << p.position.x << ", " << p.position.y << ", " << p.position.z << ")"
-      << " vel=(" << p.velocity.x << ", " << p.velocity.y << ", " << p.velocity.z << ")"
-      << '\n';
+    std::cout << "Particle " << i << " pos=(" << p.position.x << ", " << p.position.y << ", "
+              << p.position.z << ")"
+              << " vel=(" << p.velocity.x << ", " << p.velocity.y << ", " << p.velocity.z << ")"
+              << '\n';
   }
   print_system_statistics(particles, step);
   std::cout << '\n';

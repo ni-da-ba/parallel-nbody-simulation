@@ -1,5 +1,7 @@
 # Parallel Gravitational N-Body Simulation
 
+[![CI](https://github.com/ni-da-ba/parallel-nbody-simulation/actions/workflows/ci.yml/badge.svg)](https://github.com/ni-da-ba/parallel-nbody-simulation/actions/workflows/ci.yml)
+
 A C++17/MPI simulation that compares direct all-pairs gravity with the Barnes-Hut approximation in three dimensions. The project was developed and benchmarked on the [Frontera supercomputer](https://www.tacc.utexas.edu/systems/frontera) to examine algorithmic complexity, numerical behavior, and strong scaling.
 
 ## What this project demonstrates
@@ -85,7 +87,9 @@ The strong-scaling runs showed near-ideal behavior for the regular all-pairs wor
 
 ![Parallel speedup](plots/scaling_speedup.png)
 
-The full methods, experimental setup, raw result tables, limitations, and discussion are in the [project report](Parallel_Computing_Project.pdf).
+The full methods, experimental setup, reported values, limitations, and discussion are in the [project report](Parallel_Computing_Project.pdf).
+
+The exact nine values from the report's four-rank size-sweep table are also available as machine-readable [benchmark data](benchmarks/frontera_size_sweep.csv). Those archived measurements make the headline runtime and drift claims directly inspectable without extracting the PDF. The plotting utility accepts fresh simulator `SUMMARY` logs for new experiments.
 
 The standalone repository includes the plotting scripts and final figures. Raw Frontera scheduler scripts and benchmark logs were not retained, so the report is the archival record of the measured results.
 
@@ -95,6 +99,7 @@ The standalone repository includes the plotting scripts and final figures. Raw F
 src/            Simulation, octree, data distribution, and particle serialization
 tests/          Deterministic unit tests for math, distribution, dynamics, and octree behavior
 plots/          Benchmark figures and scripts used to generate them
+benchmarks/     Machine-readable values transcribed from the archival report
 CMakeLists.txt  Native build and test configuration
 ```
 
@@ -111,3 +116,7 @@ CMakeLists.txt  Native build and test configuration
 ## Project history
 
 This was an individual Spring 2026 parallel-computing project by Nicholas Babineaux at The University of Texas at Austin. The benchmark data in the report was collected on Frontera. The standalone portfolio version preserves the original implementation and archival report while adding automated tests, CI, and clearer reproduction guidance.
+
+## Maintenance and license
+
+The current `main` branch is the supported portfolio version. CI checks C++ formatting, compiles with warnings enabled, runs deterministic core tests and two-rank MPI smoke tests, and syntax-checks the plotting utilities. Dependency updates are proposed automatically, sensitive reports should follow [SECURITY.md](SECURITY.md), and the repository is released under the [MIT License](LICENSE).
