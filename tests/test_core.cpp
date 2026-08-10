@@ -28,8 +28,7 @@ bool near(double lhs, double rhs, double tolerance = 1e-12) {
 
 void check_vec(const Vec3& actual, const Vec3& expected, const std::string& message,
                double tolerance = 1e-12) {
-  check(near(actual.x, expected.x, tolerance) &&
-            near(actual.y, expected.y, tolerance) &&
+  check(near(actual.x, expected.x, tolerance) && near(actual.y, expected.y, tolerance) &&
             near(actual.z, expected.z, tolerance),
         message);
 }
@@ -59,12 +58,9 @@ void test_particle_serialization() {
   };
   const auto unpacked = unpack_particles(pack_particles(particles));
   check(unpacked.size() == particles.size(), "Particle round-trip count");
-  check_vec(unpacked[0].position, particles[0].position,
-            "Particle position round trip");
-  check_vec(unpacked[1].velocity, particles[1].velocity,
-            "Particle velocity round trip");
-  check(near(unpacked[1].mass, particles[1].mass),
-        "Particle mass round trip");
+  check_vec(unpacked[0].position, particles[0].position, "Particle position round trip");
+  check_vec(unpacked[1].velocity, particles[1].velocity, "Particle velocity round trip");
+  check(near(unpacked[1].mass, particles[1].mass), "Particle mass round trip");
 
   bool rejected = false;
   try {
@@ -82,17 +78,12 @@ void test_dynamics() {
   };
 
   check(near(compute_total_mass(particles), 3.0), "Total mass");
-  check_vec(compute_total_momentum(particles), Vec3(0.0, 0.0, 0.0),
-            "Total momentum");
+  check_vec(compute_total_momentum(particles), Vec3(0.0, 0.0, 0.0), "Total momentum");
 
   compute_accelerations(particles);
-  check(particles[0].acceleration.x > 0.0,
-        "Left particle accelerates toward the right particle");
-  check(particles[1].acceleration.x < 0.0,
-        "Right particle accelerates toward the left particle");
-  check(near(2.0 * particles[0].acceleration.x +
-                 particles[1].acceleration.x,
-             0.0),
+  check(particles[0].acceleration.x > 0.0, "Left particle accelerates toward the right particle");
+  check(particles[1].acceleration.x < 0.0, "Right particle accelerates toward the left particle");
+  check(near(2.0 * particles[0].acceleration.x + particles[1].acceleration.x, 0.0),
         "Direct forces preserve equal-and-opposite momentum change");
 }
 
@@ -105,8 +96,7 @@ void test_octree() {
 
   const Cube bounds = make_bounding_cube(particles);
   for (const auto& particle : particles) {
-    check(bounds.contains(particle.position),
-          "Bounding cube contains every particle");
+    check(bounds.contains(particle.position), "Bounding cube contains every particle");
   }
 
   OctreeNode root(bounds);
@@ -118,8 +108,8 @@ void test_octree() {
 
   auto direct = particles;
   compute_accelerations(direct);
-  const Vec3 tree_acceleration = root.compute_acceleration_on_particle(
-      0, particles, 1e-12, 1e-9, 1.0);
+  const Vec3 tree_acceleration =
+      root.compute_acceleration_on_particle(0, particles, 1e-12, 1e-9, 1.0);
   check_vec(tree_acceleration, direct[0].acceleration,
             "Exact octree traversal agrees with direct acceleration", 1e-11);
 

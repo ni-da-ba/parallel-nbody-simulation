@@ -20,7 +20,7 @@ struct Cube {
 };
 
 class OctreeNode {
-public:
+ public:
   explicit OctreeNode(const Cube& region_);
 
   bool is_leaf() const;
@@ -28,20 +28,16 @@ public:
   void compute_mass_properties(const std::vector<Particle>& particles);
   void print(const std::vector<Particle>& particles, int depth = 0) const;
 
-  Vec3 compute_acceleration_on_particle(
-					int target_particle_index,
-					const std::vector<Particle>& particles,
-					double theta,
-					double softening,
-        double G
-					) const;
+  Vec3 compute_acceleration_on_particle(int target_particle_index,
+                                        const std::vector<Particle>& particles, double theta,
+                                        double softening, double G) const;
 
   const Cube& region() const;
   double total_mass() const;
   const Vec3& center_of_mass() const;
   int particle_index() const;
 
-private:
+ private:
   Cube region_;
   double total_mass_;
   Vec3 center_of_mass_;
